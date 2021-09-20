@@ -10,9 +10,17 @@ export class AppController {
         return this.appService.getHello();
     }
 
-    @Get('/board/:id')
-    getTest(@Param() params): string {
-        console.log(params.id);
-        return `${params.id} and more`;
+
+    @Get('/home')
+    getHomePage(): string {
+        return `This is the homepage for the interactive service. This project will be close to mixplay, and implements some of the mixplay API.
+        However, this is its own project.`
+    }
+
+    @Get("/info")
+    getTerminlogy() {
+        let boardInfo = `A board is the project hosting all of the info about your project. This contains the source code`
+        let sessionInfo = `A session contains the board and the active users.`
+        return [boardInfo, sessionInfo];
     }
 }
