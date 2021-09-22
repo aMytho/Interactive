@@ -9,7 +9,7 @@ export class SessionService {
   }
 
   findAll() {
-    return `This action returns all session`;
+    return { event: 'msgToClient', data: "Returns all sessions" };
   }
 
   findOne(id: number) {
