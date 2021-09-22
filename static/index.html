@@ -15,7 +15,7 @@
 
         <input onsubmit="return false;" id="form1" type="text" name="name" placeholder="name" onclick="addMessage(this.parentElement.value);">
         <button type="submit">Send</button>
-    <button onclick="sendMessage('a')"></button>
+    <button onclick="sendMessage(document.getElementById('form1').value)"></button>
     <p>
     <ul>
         <li>Some message</li>
@@ -36,7 +36,7 @@
             socket.emit('msgToServer', message);
         }
 
-        let socket = io("http://localhost:3000");
+        let socket = io("/");
         socket.on("msgToClient", (msg) => {
             console.log(msg);
             addMessage(msg);
