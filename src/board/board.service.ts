@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { join } from 'path';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
@@ -25,4 +26,8 @@ export class BoardService {
     return `This action removes a #${id} board`;
   }
   test:number[] = [0,1,2,3]
+
+  getBoardPath() {
+    return join(__dirname, "..", "..", "static");
+  }
 }

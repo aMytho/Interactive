@@ -16,7 +16,6 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     afterInit(server: any) {
         this.logger.log('Initialized');
-        this.logger.log(server);
     }
 
     @SubscribeMessage('createSession')
@@ -50,9 +49,7 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
         return { event: 'msgToClient', data: "Hello world" };
     }
 
-
     @SubscribeMessage('request')
-    @UsePipes(new ValidationPipe())
     handleRequest(client: Socket, data: ClientPacket, ): WsResponse<ClientPacket> {
         console.log(data);
         return {event: "msgToClient", data: data}

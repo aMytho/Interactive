@@ -25,4 +25,11 @@ export class AuthService {
             access_token: this.jwtService.sign(payload),
         };
     }
+
+    async loginAsGuest() {
+        const payload = {username: "Guest", sub: 3}
+        return {
+            access_token: this.jwtService.sign(payload)
+        }
+    }
 }

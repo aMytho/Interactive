@@ -1,4 +1,5 @@
 import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -34,6 +35,12 @@ export class AppController {
     async login(@Request() req) {
         console.log(req.user)
         return this.authService.login(req.user);
+    }
+
+    @Get("auth/guest")
+    async guestLogin() {
+        console.log("Logging a user in as as guest.");
+        return this.authService.loginAsGuest();
     }
 
     @UseGuards(JwtAuthGuard)

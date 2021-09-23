@@ -1,11 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { BoardService } from './board.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 
 @Controller('board')
 export class BoardController {
-  constructor(private readonly boardService: BoardService) {}
+  constructor(private readonly boardService: BoardService) { }
 
   @Post()
   create(@Body() createBoardDto: CreateBoardDto) {
@@ -17,10 +18,11 @@ export class BoardController {
     return this.boardService.findAll();
   }
 
+  /*
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.boardService.findOne(+id);
-  }
+  } */
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
@@ -30,5 +32,10 @@ export class BoardController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.boardService.remove(+id);
+  }
+
+  @Get("/test")
+  getDefaultBoard(@Res() res: Response) {
+    return res.sendFile(this.boardService.getBoardPath() + "/example/index.html")
   }
 }
