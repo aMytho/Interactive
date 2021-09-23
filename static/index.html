@@ -33,7 +33,13 @@
         }
 
         function sendMessage(message) {
-            socket.emit('msgToServer', message);
+            let test = {
+                msgID: "string id",
+                request: {
+                    instruction: "This would be an order"
+                }
+            }
+            socket.emit('request', JSON.stringify(test));
         }
 
         let socket = io("/");

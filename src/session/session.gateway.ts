@@ -4,6 +4,9 @@ import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
+import { ClientPacket } from './dto/packet.dto';
+import { ValidationPipe } from './validation.pipe';
+import { UsePipes } from '@nestjs/common';
 
 @WebSocketGateway()
 export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -45,6 +48,14 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     handleMessage(client: Socket, text: string): WsResponse<string> {
         console.log(text);
         return { event: 'msgToClient', data: "Hello world" };
+    }
+
+
+    @SubscribeMessage('request')
+    @UsePipes(new ValidationPipe())
+    handleRequest(client: Socket, data: ClientPacket, ): WsResponse<ClientPacket> {
+        console.log(data);
+        return {event: "msgToClient", data: data}
     }
 
     handleConnection(client: Socket, ...args: any[]) {
