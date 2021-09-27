@@ -1,16 +1,23 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayInit, WsResponse, OnGatewayConnection, OnGatewayDisconnect} from '@nestjs/websockets';
+import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayInit, 
+WsResponse, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
 import { SessionService } from './session.service';
-import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
-import { Logger } from '@nestjs/common';
-import { Socket } from 'socket.io';
+import { Logger, UsePipes } from '@nestjs/common';
+import { Server, Socket } from 'socket.io';
 import { ClientPacket } from './dto/packet.dto';
+import { JoinSession } from './dto/session.dto';
 import { ValidationPipe } from './validation.pipe';
-import { UsePipes } from '@nestjs/common';
+
 
 @WebSocketGateway()
 export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     constructor(private readonly sessionService: SessionService) { }
+
+    /**
+     * The server instance. This holds all connections(sockets)
+     */
+    @WebSocketServer()
+    private server: Server;
 
     private logger: Logger = new Logger('SessionGateway');
 
@@ -19,14 +26,18 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     }
 
     @SubscribeMessage('createSession')
-    create(@MessageBody() createSessionDto: CreateSessionDto) {
-        return this.sessionService.create(createSessionDto);
+    create(client: Socket): WsResponse<any> {
+        this.logger.log("Creating a session for " + client.id)
+        return this.sessionService.create(client);
     }
 
+    @UsePipes(new ValidationPipe())
     @SubscribeMessage('findAllSession')
-    findAll() {
+    findAll(@MessageBody() joinSession: JoinSession) {
+        console.log(joinSession)
+        console.log(true)
         return this.sessionService.findAll();
-    }
+    } 
 
     @SubscribeMessage('findOneSession')
     findOne(@MessageBody() id: number) {
@@ -51,14 +62,25 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
 
     @SubscribeMessage('request')
     handleRequest(client: Socket, data: ClientPacket, ): WsResponse<ClientPacket> {
-        console.log(data);
+        console.log(1);
         return {event: "msgToClient", data: data}
     }
 
-    handleConnection(client: Socket, ...args: any[]) {
-        this.logger.log('Client connected', client.id);
+    @SubscribeMessage("random")
+    random(client: Socket) {
+        this.sessionService.sendRandomMessage(client)
     }
+
+    @SubscribeMessage("room")
+    room(client: Socket) {
+        this.sessionService.sendToRoomOnly(client, this.server);
+    }
+
+    handleConnection(client: Socket, ...args: any[]) {
+        this.logger.log('Client connecteds', client.id);
+    }
+
     handleDisconnect(client: Socket) {
         this.logger.log('Client disconnected', client.id);
-    }
+    } 
 }

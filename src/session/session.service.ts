@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSessionDto } from './dto/create-session.dto';
+import { Server, Socket } from 'socket.io';
 import { UpdateSessionDto } from './dto/update-session.dto';
-import { ClientPacket } from './dto/packet.dto';
 
 @Injectable()
 export class SessionService {
-  create(createSessionDto: CreateSessionDto) {
-    return 'This action adds a new session';
+  create(socket: Socket) {
+    socket.join("example");
+    return { event: "msgToClient", data: "test" }
   }
 
   findAll() {
@@ -23,5 +23,20 @@ export class SessionService {
 
   remove(id: number) {
     return `This action removes a #${id} session`;
+  }
+
+  sendRandomMessage(socket: Socket) {
+    socket.emit("msgToClient", this.generateRandomString())
+  }
+
+  sendToRoomOnly(socket: Socket, server: Server) {
+    server.to("example").emit("msgToClient", 5000);
+    console.log("THis is a room");
+  }
+
+  private generateRandomString() {
+    let r = (Math.random() + 1).toString(36).substring(7);
+    console.log("random", r);
+    return r
   }
 }

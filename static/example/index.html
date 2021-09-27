@@ -5,22 +5,29 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js"
-        integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg"
-        crossorigin="anonymous"></script>
+    <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
     <script src="/example/scripts/main.js"></script>
     <title>Interactive!</title>
+    <style>
+        body {
+            background-color: black;
+        }
+        li {
+            color: whitesmoke;
+        }
+    </style>
 </head>
 
 <body>
-    <button>aaaaaaaaaaaaaa</button>
+    <button onclick="">connect</button>
+    <button onclick="makeRequest()">Request</button>
+    <button onclick="joinRoom()">Join Rook</button>
+    <button onclick="getRandomMessage()">Get Random Message ALL rooms</button>
+    <button onclick="roomMSG()">Get message from room only</button>
+    <button onclick="pipe()">pipe</button>
     <button>AAAAAAAAAAAAAA</button>
     <button>AAAAAAAAAAAAAA</button>
-    <button>AAAAAAAAAAAAAA</button>
-    <button>AAAAAAAAAAAAAA</button>
-    <button>AAAAAAAAAAAAAA</button>
-    <button>AAAAAAAAAAAAAA</button>
-    <button>AAAAAAAAAAAAAA</button>
+    <button>Test</button>
     <ul id="serverLogs">
 
     </ul>
