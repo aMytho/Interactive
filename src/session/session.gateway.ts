@@ -1,12 +1,13 @@
 import { WebSocketGateway, SubscribeMessage, MessageBody, OnGatewayInit, 
-WsResponse, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer} from '@nestjs/websockets';
+WsResponse, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, WsException} from '@nestjs/websockets';
 import { SessionService } from './session.service';
 import { UpdateSessionDto } from './dto/update-session.dto';
-import { Logger, UsePipes } from '@nestjs/common';
+import { Logger, UseFilters, UsePipes } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
 import { ClientPacket } from './dto/packet.dto';
 import { JoinSession } from './dto/session.dto';
 import { ValidationPipe } from './validation.pipe';
+import { AllExceptionsFilter } from './filter';
 
 
 @WebSocketGateway()
@@ -34,8 +35,8 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @UsePipes(new ValidationPipe())
     @SubscribeMessage('findAllSession')
     findAll(@MessageBody() joinSession: JoinSession) {
-        console.log(joinSession)
-        console.log(true)
+        console.log(joinSession);
+        console.log(true);
         return this.sessionService.findAll();
     } 
 
@@ -74,6 +75,24 @@ export class SessionGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     @SubscribeMessage("room")
     room(client: Socket) {
         this.sessionService.sendToRoomOnly(client, this.server);
+    }
+
+    @SubscribeMessage("auth")
+    onlyAuthResponse() {
+        console.log("they passed the guard!");
+        return {event: "msgToClient", data: "AUTH WORKED WOW"}
+    }
+
+    @SubscribeMessage("method")
+    handleMethod() {
+        console.log("Method recieved");   
+    }
+
+    @UseFilters(new AllExceptionsFilter())
+    @SubscribeMessage("errorl") 
+    handleErrorl() {
+        console.log("abt to cause an error")
+        throw new WsException("OH NO, H U G E ERROR")
     }
 
     handleConnection(client: Socket, ...args: any[]) {

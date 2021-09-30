@@ -1,5 +1,4 @@
-import { Controller, Get, Post, UseGuards, Request } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import { Controller, Get, Post, UseGuards, Request, HttpException, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
@@ -47,5 +46,13 @@ export class AppController {
     @Get('profile')
     getProfile(@Request() req) {
         return req.user;
+    }
+
+    @Get("error")
+    async findAll() {
+        throw new HttpException({
+            status: HttpStatus.FORBIDDEN,
+            error: 'This is a custom message',
+        }, HttpStatus.FORBIDDEN);
     }
 }

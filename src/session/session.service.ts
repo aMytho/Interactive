@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Server, Socket } from 'socket.io';
+import { BasePacket } from 'src/packet/dto/packet.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 
 @Injectable()
@@ -29,9 +30,17 @@ export class SessionService {
     socket.emit("msgToClient", this.generateRandomString())
   }
 
-  sendToRoomOnly(socket: Socket, server: Server) {
+  sendToRoomOnly(_socket: Socket, server: Server) {
     server.to("example").emit("msgToClient", 5000);
     console.log("THis is a room");
+  }
+
+  activateMethod(packet: BasePacket) {
+    
+  }
+
+  sendToRoom(server: Server, room: string, packet) {
+
   }
 
   private generateRandomString() {
